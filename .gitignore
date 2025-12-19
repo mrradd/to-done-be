@@ -135,3 +135,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 specs.txt
+to-done.db
+test-to-done.db

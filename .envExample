@@ -1,0 +1,4 @@
+PORT=3000
+HOST=localhost
+#DB_NAME=test-to-done.db
+DB_NAME=to-done.db
