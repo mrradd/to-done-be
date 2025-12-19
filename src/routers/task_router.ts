@@ -23,7 +23,7 @@ taskRouter.post('/', (req: Request, res: Response) => {
 
 taskRouter.put('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`UPDATE AN EXISTING TASK ${req.params.id}`);
+        res.send(`UPDATE TASK ${req.params.id}`);
     }
     catch (error) {
         console.error(error);
@@ -33,7 +33,17 @@ taskRouter.put('/:id', (req: Request, res: Response) => {
 
 taskRouter.get('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`GET AN EXISTING TASK ${req.params.id}`);
+        res.send(`GET TASK ${req.params.id}`);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+taskRouter.put('/:id/category/:category_id', (req: Request, res: Response) => {
+    try {
+        res.send(`UPDATE TASK ${req.params.id} WITH CATEGORY ${req.params.category_id}`);
     }
     catch (error) {
         console.error(error);
@@ -43,7 +53,7 @@ taskRouter.get('/:id', (req: Request, res: Response) => {
 
 taskRouter.delete('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`DELETE AN EXISTING TASK ${req.params.id}`);
+        res.send(`DELETE TASK ${req.params.id}`);
     }
     catch (error) {
         console.error(error);

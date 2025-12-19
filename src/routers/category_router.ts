@@ -24,7 +24,7 @@ categoryRouter.post('/', (req: Request, res: Response) => {
 
 categoryRouter.post('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`UPDATE AN EXISTING CATEGORY ${req.params.id}`);
+        res.send(`UPDATE CATEGORY ${req.params.id}`);
     }
     catch (error) {
         console.error(error);
@@ -34,7 +34,7 @@ categoryRouter.post('/:id', (req: Request, res: Response) => {
 
 categoryRouter.get('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`GET AN EXISTING CATEGORY ${req.params.id}`);
+        res.send(`GET CATEGORY ${req.params.id}`);
     }
     catch (error) {
         console.error(error);
@@ -44,7 +44,7 @@ categoryRouter.get('/:id', (req: Request, res: Response) => {
 
 categoryRouter.put('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`UPDATE AN EXISTING CATEGORY ${req.params.id}`);
+        res.send(`UPDATE CATEGORY ${req.params.id}`);
     }
     catch (error) {
         console.error(error);
@@ -54,7 +54,7 @@ categoryRouter.put('/:id', (req: Request, res: Response) => {
 
 categoryRouter.delete('/:id', (req: Request, res: Response) => {
     try {
-        res.send(`DELETE AN EXISTING CATEGORY ${req.params.id}`);
+        res.send(`DELETE CATEGORY ${req.params.id}`);
     }
     catch (error) {
         console.error(error);

@@ -3,15 +3,16 @@ import { TaskDBA } from "./task_dba";
 import { Task } from "../models/Task";
 import crypto from "crypto";
 import { TheDB } from "./db";
+import { Category } from "../models/Category";
+import { CategoryDBA } from "./category_dba";
+import dotenv from "dotenv";
+dotenv.config();
 
-const runTest = async () => {
+//Test the TaskDBA class.
+const runTaskTest = async () => {
     console.log("Starting TaskDBA Transaction Test...");
 
     const taskId = crypto.randomUUID();
-
-    // We should probably get a real category ID, but for now we test with a fake one.
-    // Init_db creates 3 random ones and prints them? No, it doesn't print the IDs.
-    // We'll trust that sqlite FK enforcement is either off or my error handling will catch it.
 
     const newTask: Task = {
         id: taskId,
@@ -49,7 +50,7 @@ const runTest = async () => {
             console.error("Task not found in DB!");
         } else {
             console.log("Task found in DB:", row);
-            if (row.status === "Complete") {
+            if (row.status === 1) {
                 console.log("SUCCESS: Task status is Complete.");
             } else {
                 console.error("FAILURE: Task status is not Complete, it is " + row.status);
@@ -69,8 +70,77 @@ const runTest = async () => {
     } catch (err) {
         console.error("Error verifying task:", err);
     }
+};
 
+//Test the CategoryDBA class.
+const runCategoryTest = async () => {
+    console.log("Starting CategoryDBA Transaction Test...");
+
+    const categoryId = crypto.randomUUID();
+
+    const newCategory: Category = {
+        id: categoryId,
+        name: "Test Category"
+    };
+
+    let createdCategory: Category | null = null;
+    try {
+        console.log("Creating category...");
+        createdCategory = await CategoryDBA.createCategory(newCategory);
+        console.log("Category created successfully:", createdCategory);
+    } catch (error) {
+        console.error("Failed to create category:", error);
+    }
+
+    // Update
+    createdCategory!.name = "Updated Test Category";
+    let updatedCategory: Category | null = null;
+    try {
+        console.log("Updating category...");
+        updatedCategory = await CategoryDBA.updateCategory(createdCategory!);
+        console.log("Category updated successfully.");
+    } catch (error) {
+        console.error("Failed to update category:", error);
+    }
+
+    // Verify update using CategoryDBA methods
+    try {
+        console.log("Fetching category by ID...");
+        const row = await CategoryDBA.getCategoryById(updatedCategory!.id);
+        if (!row) {
+            console.error("Category not found in DB!");
+        } else {
+            console.log("Category found in DB:", row);
+            if (row.name === "Updated Test Category") {
+                console.log("SUCCESS: Category name is Updated Test Category.");
+            } else {
+                console.error("FAILURE: Category name is not Updated Test Category, it is " + row.name);
+            }
+        }
+
+        console.log("Fetching all categories...");
+        const allCategories = await CategoryDBA.getAllCategories();
+        console.log(`Found ${allCategories.length} categories.`);
+        const found = allCategories.find((c: any) => c.id === categoryId);
+        if (found) {
+            console.log("SUCCESS: Created category found in getAllCategories list.");
+        } else {
+            console.error("FAILURE: Created category NOT found in getAllCategories list.");
+        }
+    } catch (err) {
+        console.error("Error verifying category:", err);
+    }
+};
+
+const runTests = async () => {
+    if (process.env.NODE_ENV !== "test") {
+        console.error("Error: NODE_ENV is not set to 'test'");
+        return;
+    }
+
+    await runTaskTest();
+    await runCategoryTest();
     TheDB.close();
 };
 
-runTest();
+runTests();
