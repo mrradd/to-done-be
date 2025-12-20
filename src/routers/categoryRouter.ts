@@ -5,6 +5,7 @@ import { Category } from "../models/Category";
 
 const categoryRouter = Router();
 
+//Get all Categories
 categoryRouter.get('/', async (req: Request, res: Response) => {
     try {
         const categories: Category[] = await CategoryDBA.getAllCategories();
@@ -16,13 +17,15 @@ categoryRouter.get('/', async (req: Request, res: Response) => {
     }
 });
 
+//Create new Category
 categoryRouter.post('/', async (req: Request, res: Response) => {
     try {
-        if (!req.body.name) {
+        const newCategory = req.body as Category;
+        if (!newCategory.name) {
             return res.status(400).send('Name is required');
         }
 
-        const category: Category = await CategoryDBA.createCategory(req.body);
+        const category: Category = await CategoryDBA.createCategory(newCategory);
         res.send(category);
     }
     catch (error) {
@@ -31,6 +34,7 @@ categoryRouter.post('/', async (req: Request, res: Response) => {
     }
 });
 
+//Get Category by ID
 categoryRouter.get('/:id', async (req: Request, res: Response) => {
     try {
         if (!isValidUUID(req.params.id)) {
@@ -45,12 +49,15 @@ categoryRouter.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
+//Update Category by ID
 categoryRouter.put('/:id', async (req: Request, res: Response) => {
     try {
-        if (!isValidUUID(req.params.id)) {
+        const updatedCategory = req.body as Category;
+        updatedCategory.id = req.params.id;
+        if (!isValidUUID(updatedCategory.id)) {
             return res.status(400).send('ID is invalid');
         }
-        const category: Category = await CategoryDBA.updateCategory(req.body);
+        const category: Category = await CategoryDBA.updateCategory(updatedCategory);
         res.send(category);
     }
     catch (error) {
@@ -59,6 +66,7 @@ categoryRouter.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
+//Delete Category by ID
 categoryRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         if (!isValidUUID(req.params.id)) {

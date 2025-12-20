@@ -22,7 +22,7 @@ export const isValidUtcDate = (dateString: string): boolean => {
         return false;
     }
 
-    // Regex for ISO 8601 UTC date (e.g., 2023-10-27T10:00:00.000Z or 2023-10-27T10:00:00Z)
+    // Regex UTC date (e.g., 2023-10-27T10:00:00.000Z or 2023-10-27T10:00:00Z)
     const utcDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/;
 
     if (!utcDateRegex.test(dateString)) {
