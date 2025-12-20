@@ -50,12 +50,13 @@ export class TaskDBA {
                     VALUES (?, ?, ?, ?, ?, ?, ?);
                 `;
 
+                task.id = crypto.randomUUID();
                 TheDB.run(sql, [
                     task.id,
                     task.title,
                     task.description,
                     task.due_date,
-                    task.created_date,
+                    new Date().toUTCString(),
                     task.status,
                     task.category_id
                 ], (err) => {
@@ -88,7 +89,6 @@ export class TaskDBA {
                     SET title = ?,
                         description = ?,
                         due_date = ?,
-                        created_date = ?,
                         status = ?,
                         category_id = ?
                     WHERE id = ?
@@ -98,7 +98,6 @@ export class TaskDBA {
                     task.title,
                     task.description,
                     task.due_date,
-                    task.created_date,
                     task.status,
                     task.category_id,
                     task.id

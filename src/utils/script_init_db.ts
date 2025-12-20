@@ -26,8 +26,8 @@ export const initDB = () => {
                     title TEXT NOT NULL,
                     description TEXT,
                     due_date TEXT,
-                    created_date TEXT NOT NULL,
-                    status TEXT NOT NULL,
+                    created_date TEXT NOT NULL DEFAULT (datetime('now', 'utc')),
+                    status INTEGER NOT NULL,
                     category_id TEXT,
                     FOREIGN KEY (category_id) REFERENCES categories(id)
                 );

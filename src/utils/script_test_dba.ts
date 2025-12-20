@@ -14,12 +14,14 @@ const runTaskTest = async () => {
 
     const taskId = crypto.randomUUID();
 
+    const dueDate = new Date();
+    dueDate.setFullYear(2027);
     const newTask: Task = {
         id: taskId,
         title: "Test Task",
         description: "Description of test task",
-        due_date: "2023-12-31",
-        created_date: new Date().toISOString(),
+        due_date: dueDate.toUTCString(),
+        created_date: new Date().toUTCString(), //Including this since it is required by the model, but it is set inside the createTask method.
         status: 0,
         category_id: ""
     };
@@ -47,15 +49,15 @@ const runTaskTest = async () => {
     // Verify update using TaskDBA methods
     try {
         console.log("Fetching task by ID...");
-        const row = await TaskDBA.getTaskById(updatedTask!.id);
-        if (!row) {
+        const task = await TaskDBA.getTaskById(updatedTask!.id);
+        if (!task) {
             console.error("Task not found in DB!");
         } else {
-            console.log("Task found in DB:", row);
-            if (row.status === 1) {
+            console.log("Task found in DB:", task);
+            if (task.status === 1) {
                 console.log("SUCCESS: Task status is Complete.");
             } else {
-                console.error("FAILURE: Task status is not Complete, it is " + row.status);
+                console.error("FAILURE: Task status is not Complete, it is " + task.status);
             }
         }
 
@@ -108,22 +110,22 @@ const runCategoryTest = async () => {
     // Verify update using CategoryDBA methods
     try {
         console.log("Fetching category by ID...");
-        const row = await CategoryDBA.getCategoryById(updatedCategory!.id);
-        if (!row) {
+        const category = await CategoryDBA.getCategoryById(updatedCategory!.id);
+        if (!category) {
             console.error("Category not found in DB!");
         } else {
-            console.log("Category found in DB:", row);
-            if (row.name === "Updated Test Category") {
+            console.log("Category found in DB:", category);
+            if (category.name === "Updated Test Category") {
                 console.log("SUCCESS: Category name is Updated Test Category.");
             } else {
-                console.error("FAILURE: Category name is not Updated Test Category, it is " + row.name);
+                console.error("FAILURE: Category name is not Updated Test Category, it is " + category.name);
             }
         }
 
         console.log("Fetching all categories...");
         const allCategories = await CategoryDBA.getAllCategories();
         console.log(`Found ${allCategories.length} categories.`);
-        const found = allCategories.find((c: any) => c.id === categoryId);
+        const found = allCategories.find((c: any) => c.id === updatedCategory!.id);
         if (found) {
             console.log("SUCCESS: Created category found in getAllCategories list.");
         } else {
@@ -141,6 +143,7 @@ const runTests = async () => {
     }
 
     await runTaskTest();
+    console.log("\n\n");
     await runCategoryTest();
     TheDB.close();
 };

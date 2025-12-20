@@ -44,11 +44,11 @@ export class CategoryDBA {
                     VALUES (?, ?)
                 `;
 
+                category.id = crypto.randomUUID();
                 TheDB.run(sql, [
                     category.id,
                     category.name
                 ], (err) => {
-
                     if (err) {
                         console.error("Error in createCategory:", err);
                         TheDB.run("ROLLBACK", () => reject(err));

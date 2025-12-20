@@ -21,12 +21,6 @@ categoryRouter.post('/', async (req: Request, res: Response) => {
         if (!req.body.name) {
             return res.status(400).send('Name is required');
         }
-        if (!req.body.id) {
-            return res.status(400).send('ID is required');
-        }
-        if (!isValidUUID(req.body.id)) {
-            return res.status(400).send('ID is invalid');
-        }
 
         const category: Category = await CategoryDBA.createCategory(req.body);
         res.send(category);
