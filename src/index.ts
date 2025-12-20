@@ -1,15 +1,14 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
-import taskRouter from './routers/task_router';
-import categoryRouter from './routers/category_router';
+import taskRouter from './routers/taskRouter';
+import categoryRouter from './routers/categoryRouter';
 import cors from "cors";
 
 dotenv.config();
 const app = express();
 const port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const host: string = process.env.HOST ?? 'localhost';
-
 
 app.use(bodyParser.json());
 app.use(cors());

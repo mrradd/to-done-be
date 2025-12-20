@@ -7,8 +7,8 @@
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "init_db": "ts-node src/db/init_db.ts",
-    "test-dba": "ts-node src/db/test_dba.ts"
+    "init_db": "ts-node src/utils/script_init_db.ts",
+    "test-dba": "ts-node src/utils/script_test_dba.ts"
   },
   "keywords": [],
   "author": "",

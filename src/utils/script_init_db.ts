@@ -1,4 +1,4 @@
-import { TheDB } from "./db";
+import { TheDB } from "../db/theDb";
 import crypto from "crypto";
 
 /**

@@ -1,7 +1,8 @@
 PORT=3000
 HOST=localhost
+TEST_DB_NAME=test-to-done.db
+DB_NAME=to-done.db
+
 NODE_ENV=test
 #NODE_ENV=dev
 #NODE_ENV=prod
-DB_NAME=test-to-done.db
-#DB_NAME=to-done.db

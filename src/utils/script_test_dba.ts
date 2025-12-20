@@ -1,10 +1,10 @@
 
-import { TaskDBA } from "./task_dba";
+import { TaskDBA } from "../db/taskDba";
 import { Task } from "../models/Task";
 import crypto from "crypto";
-import { TheDB } from "./db";
+import { TheDB } from "../db/theDb";
 import { Category } from "../models/Category";
-import { CategoryDBA } from "./category_dba";
+import { CategoryDBA } from "../db/categoryDba";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -21,22 +21,24 @@ const runTaskTest = async () => {
         due_date: "2023-12-31",
         created_date: new Date().toISOString(),
         status: 0,
-        category_id: "some-category-id"
+        category_id: ""
     };
 
+    let createdTask: Task | null = null;
     try {
         console.log("Creating task...");
-        const createdTask = await TaskDBA.createTask(newTask);
+        createdTask = await TaskDBA.createTask(newTask);
         console.log("Task created successfully:", createdTask);
     } catch (error) {
         console.error("Failed to create task:", error);
     }
 
     // Update
-    newTask.status = 1;
+    createdTask!.status = 1;
+    let updatedTask: Task | null = null;
     try {
         console.log("Updating task...");
-        await TaskDBA.updateTask(newTask);
+        updatedTask = await TaskDBA.updateTask(createdTask!);
         console.log("Task updated successfully.");
     } catch (error) {
         console.error("Failed to update task:", error);
@@ -45,7 +47,7 @@ const runTaskTest = async () => {
     // Verify update using TaskDBA methods
     try {
         console.log("Fetching task by ID...");
-        const row = await TaskDBA.getTaskById(taskId);
+        const row = await TaskDBA.getTaskById(updatedTask!.id);
         if (!row) {
             console.error("Task not found in DB!");
         } else {
@@ -60,7 +62,7 @@ const runTaskTest = async () => {
         console.log("Fetching all tasks...");
         const allTasks = await TaskDBA.getAllTasks();
         console.log(`Found ${allTasks.length} tasks.`);
-        const found = allTasks.find((t: any) => t.id === taskId);
+        const found = allTasks.find((t: any) => t.id === updatedTask!.id);
         if (found) {
             console.log("SUCCESS: Created task found in getAllTasks list.");
         } else {

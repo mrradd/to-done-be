@@ -1,14 +1,16 @@
+import { Category } from "../models/Category";
 import { Task } from "../models/Task";
-import { TheDB } from "./db";
+import { TheDB } from "./theDb";
+
 /**
  * Data Access Object for Tasks.
  */
-export class TaskDBA {
-    static getAllTasks(): Promise<Task[]> {
+export class CategoryDBA {
+    static getAllCategories(): Promise<Category[]> {
         return new Promise((resolve, reject) => {
-            TheDB.all("SELECT * FROM tasks;", (err, rows: Task[]) => {
+            TheDB.all("SELECT * FROM categories;", (err, rows: Category[]) => {
                 if (err) {
-                    console.log("Error in getAllTasks");
+                    console.log("Error in getAllCategories");
                     console.error(err);
                     reject(err);
                 } else {
@@ -18,11 +20,11 @@ export class TaskDBA {
         });
     }
 
-    static getTaskById(id: string): Promise<Task> {
+    static getCategoryById(id: string): Promise<Category> {
         return new Promise((resolve, reject) => {
-            TheDB.get("SELECT * FROM tasks WHERE id = ?;", [id], (err, row: Task) => {
+            TheDB.get("SELECT * FROM categories WHERE id = ?;", [id], (err, row: Category) => {
                 if (err) {
-                    console.log("Error in getTaskById");
+                    console.log("Error in getCategoryById");
                     console.error(err);
                     reject(err);
                 } else {
@@ -32,30 +34,24 @@ export class TaskDBA {
         });
     }
 
-    static createTask(task: Task): Promise<Task> {
+    static createCategory(category: Category): Promise<Category> {
         return new Promise((resolve, reject) => {
             TheDB.serialize(() => {
                 TheDB.run("BEGIN TRANSACTION");
 
                 const sql = `
-                    INSERT INTO tasks (id, title, description, due_date, created_date, status, category_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO categories (id, name)
+                    VALUES (?, ?)
                 `;
 
                 TheDB.run(sql, [
-                    task.id,
-                    task.title,
-                    task.description,
-                    task.due_date,
-                    task.created_date,
-                    task.status,
-                    task.category_id
+                    category.id,
+                    category.name
                 ], (err) => {
 
                     if (err) {
-                        console.error("Error in createTask:", err);
+                        console.error("Error in createCategory:", err);
                         TheDB.run("ROLLBACK", () => reject(err));
-                        return;
                     }
 
                     TheDB.run("COMMIT", (err) => {
@@ -63,7 +59,7 @@ export class TaskDBA {
                             console.error("Error committing create transaction:", err);
                             reject(err);
                         } else {
-                            resolve(task);
+                            resolve(category);
                         }
                     });
                 });
@@ -71,30 +67,24 @@ export class TaskDBA {
         });
     }
 
-    static updateTask(task: Task): Promise<Task> {
+    static updateCategory(category: Category): Promise<Category> {
         return new Promise((resolve, reject) => {
             TheDB.serialize(() => {
                 TheDB.run("BEGIN TRANSACTION");
 
                 const sql = `
-                    UPDATE tasks
-                    SET title = ?, description = ?, due_date = ?, created_date = ?, status = ?, category_id = ?
+                    UPDATE categories
+                    SET name = ?
                     WHERE id = ?
                 `;
 
                 TheDB.run(sql, [
-                    task.title,
-                    task.description,
-                    task.due_date,
-                    task.created_date,
-                    task.status,
-                    task.category_id,
-                    task.id
+                    category.name,
+                    category.id
                 ], (err) => {
                     if (err) {
-                        console.error("Error in updateTask:", err);
+                        console.error("Error in updateCategory:", err);
                         TheDB.run("ROLLBACK", () => reject(err));
-                        return;
                     }
 
                     TheDB.run("COMMIT", (err) => {
@@ -102,7 +92,7 @@ export class TaskDBA {
                             console.error("Error committing update transaction:", err);
                             reject(err);
                         } else {
-                            resolve(task);
+                            resolve(category);
                         }
                     });
                 });
@@ -110,11 +100,11 @@ export class TaskDBA {
         });
     }
 
-    static deleteTask(id: string): Promise<string> {
+    static deleteCategory(id: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            TheDB.run("DELETE FROM tasks WHERE id = ?;", [id], (err) => {
+            TheDB.run("DELETE FROM categories WHERE id = ?;", [id], (err) => {
                 if (err) {
-                    console.error("Error in deleteTask:", err);
+                    console.error("Error in deleteCategory:", err);
                     reject(err);
                 } else {
                     resolve(id);
