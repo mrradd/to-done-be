@@ -1,4 +1,4 @@
-import { Category } from "../models/Category";
+import { Category, CreateCategoryDto } from "../models/Category";
 import { TheDB } from "./theDb";
 
 /**
@@ -43,9 +43,9 @@ export class CategoryDBA {
                     VALUES (?, ?)
                 `;
 
-                category.id = crypto.randomUUID();
+                const newId = crypto.randomUUID();
                 TheDB.run(sql, [
-                    category.id,
+                    newId,
                     category.name
                 ], (err) => {
                     if (err) {
