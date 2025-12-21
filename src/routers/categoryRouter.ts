@@ -50,7 +50,7 @@ categoryRouter.get('/:id', async (req: Request, res: Response) => {
 });
 
 //Update Category by ID
-categoryRouter.put('/:id', async (req: Request, res: Response) => {
+categoryRouter.patch('/:id', async (req: Request, res: Response) => {
     try {
         const updatedCategory = req.body as Category;
         updatedCategory.id = req.params.id;

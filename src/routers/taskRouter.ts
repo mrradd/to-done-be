@@ -46,7 +46,7 @@ taskRouter.post('/', async (req: Request, res: Response) => {
 });
 
 //Update Task by ID
-taskRouter.put('/:id', async (req: Request, res: Response) => {
+taskRouter.patch('/:id', async (req: Request, res: Response) => {
     try {
         const taskToUpdate = req.body as Task;
         taskToUpdate.id = req.params.id;
