@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { TaskDBA } from "../db/taskDba";
 import { CreateTaskDto, Task, UpdateTaskDto } from "../models/Task";
-import { isValidUtcDate, isValidUUID } from "../utils/utils";
+import { isNonEmptyString, isValidUtcDate, isValidUUID } from "../utils/utils";
 
 const taskRouter = Router();
 //Get all Tasks
@@ -20,21 +20,23 @@ taskRouter.get("/", async (req: Request, res: Response) => {
 taskRouter.post("/", async (req: Request, res: Response) => {
     try {
         const taskDto = req.body as CreateTaskDto;
-        if (!taskDto.title) {
+
+        if (taskDto.title !== undefined && !isNonEmptyString(taskDto.title)) {
             return res.status(400).send("Title is required");
         }
-        if (!taskDto.description) {
-            return res.status(400).send("Description is required");
-        }
-        if (taskDto.due_date && !isValidUtcDate(taskDto.due_date)) {
+        if (taskDto.due_date !== undefined && !isValidUtcDate(taskDto.due_date)) {
             return res.status(400).send("UTC due date is required");
         }
-        if (!taskDto.status) {
-            return res.status(400).send("Status is required");
+        if (taskDto.description !== undefined && !isNonEmptyString(taskDto.description)) {
+            return res.status(400).send("Description is required");
         }
-        if (taskDto.category_id && !isValidUUID(taskDto.category_id)) {
+        if (!(taskDto.status === 0 || taskDto.status === 1)) {
+            return res.status(400).send("Valid status is required");
+        }
+        if (taskDto.category_id !== undefined && !isValidUUID(taskDto.category_id)) {
             return res.status(400).send("Category ID is invalid");
         }
+
         const newTask = { ...taskDto } as Task;
         const task: Task = await TaskDBA.createTask(newTask);
         res.send(task);
@@ -46,26 +48,26 @@ taskRouter.post("/", async (req: Request, res: Response) => {
 });
 
 //Update Task by ID
-taskRouter.patch("/:id", async (req: Request, res: Response) => {
+taskRouter.put("/:id", async (req: Request, res: Response) => {
     try {
-        const taskDto = req.body as UpdateTaskDto;
+        const taskDto = req.body as Partial<UpdateTaskDto>;
 
         if (!isValidUUID(req.params.id)) {
             return res.status(400).send("ID is invalid");
         }
-        if (!taskDto.title) {
+        if (taskDto.title !== undefined && !isNonEmptyString(taskDto.title)) {
             return res.status(400).send("Title is required");
         }
-        if (taskDto.due_date && !isValidUtcDate(taskDto.due_date)) {
+        if (taskDto.due_date !== undefined && !isValidUtcDate(taskDto.due_date)) {
             return res.status(400).send("UTC due date is required");
         }
-        if (!taskDto.description) {
+        if (taskDto.description !== undefined && !isNonEmptyString(taskDto.description)) {
             return res.status(400).send("Description is required");
         }
-        if (!taskDto.status) {
-            return res.status(400).send("Status is required");
+        if (!(taskDto.status === 0 || taskDto.status === 1)) {
+            return res.status(400).send("Valid status is required");
         }
-        if (taskDto.category_id && !isValidUUID(taskDto.category_id)) {
+        if (taskDto.category_id !== undefined && !isValidUUID(taskDto.category_id)) {
             return res.status(400).send("Category ID is invalid");
         }
 
