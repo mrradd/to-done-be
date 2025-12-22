@@ -39,5 +39,5 @@ export const isValidUtcDate = (dateString: string): boolean => {
  * @returns true if it is a non empty string, false otherwise.
  */
 export const isNonEmptyString = (value: string): boolean => {
-    return value.trim().length > 0;
+    return value != null && value.trim().length > 0;
 }
